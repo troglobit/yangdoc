@@ -1,7 +1,8 @@
 import sys
 import libyang
 import logging
-from ytree import generate_html_tree, create_html_output, load_module
+from ytree import load_module
+from ytree.html import generate_html_tree, create_html_output
 
 
 def usage():
