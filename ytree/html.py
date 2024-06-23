@@ -19,19 +19,28 @@ def get_type_definition(node):
         if type_:
             if hasattr(type_, 'name') and type_.name():
                 return type_.name()
-            elif hasattr(type_, 'base') and type_.base().name():
+            if hasattr(type_, 'base') and type_.base().name():
                 return type_.base().name()
         return "unknown"
-    except Exception as e:
-        logging.error(f"Error getting type definition: {e}")
+    except Exception as err:
+        logging.error("Error getting type definition: %s", err)
         return "unknown"
 
 
 def generate_tree(node, depth=0):
-    description = node.description() if node.description() else "No description available"
-    logging.debug('node: %s - %s - %s in %s', node.name(), node.keyword(), node.nodetype(), node.parent().name() if node.parent() else None)
-
-    default_value = node.default() if hasattr(node, 'default') and node.default() else None
+    logging.debug('%s: is a %s type %s in %s', node.name(),
+                  node.keyword(), node.nodetype(),
+                  node.parent().name() if node.parent() else None)
+    if node.description():
+        description = node.description()
+    else:
+        description = "No description available"
+    if hasattr(node, 'default') and node.default():
+        default_value = node.default()
+        default_attr = f' data-default="{default_value}"'
+    else:
+        default_value = None
+        default_attr = ''
     is_leaf = not hasattr(node, 'children') or not any(node.children())
 
     node_type = 'file' if is_leaf else 'default'
@@ -44,7 +53,8 @@ def generate_tree(node, depth=0):
         node_type = 'action'
     elif node.keyword() in ["leaf", "leaf-list"]:
         parent = node.parent()
-        logging.debug('%s: is a leaf with parent \'%s\'', node.name(), parent.keyword() if parent else None)
+        logging.debug('%s: is a leaf with parent \'%s\'', node.name(),
+                      parent.keyword() if parent else None)
         if parent and parent.keyword() == "input":
             node_prefix = "Input: "
             node_type = 'input'
@@ -53,8 +63,10 @@ def generate_tree(node, depth=0):
             node_type = 'output'
 
     xpath = construct_xpath(node)
-    node_type_info = get_type_definition(node) if node.keyword() in ["leaf", "leaf-list"] else "N/A"
-    default_attr = f' data-default="{default_value}"' if default_value else ''
+    if node.keyword() in ["leaf", "leaf-list"]:
+        node_type_info = get_type_definition(node)
+    else:
+        node_type_info = "N/A"
 
     tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}">' \
            f'<abbr title="{description}">{node_prefix}{node.name()}</abbr>'
