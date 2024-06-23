@@ -10,20 +10,43 @@ def construct_xpath(node):
     return "/" + "/".join(parts)
 
 
+def get_type_definition(node):
+    try:
+        type_ = node.type()
+        if type_:
+            base_type = type_.name()
+            module = type_.module().name() if type_.module() else "unknown"
+            return f"{module}:{base_type}"
+    except AttributeError as e:
+        logging.error(f"Error getting type definition: {e}")
+        # Fall back to using the base type name directly from the node
+        try:
+            return node.type().name()
+        except AttributeError:
+            return "unknown"
+    return "unknown"
+
+
 def generate_tree(node, depth=0):
-    description = node.description() if node.description() else "No description available"
+    if node.description():
+        description = node.description()
+    else:
+        description = "No description available"
+
+    logging.debug('node: %s - %s - %s in %s', node.name(), node.keyword(),
+                  node.nodetype(), node.parent().name() if node.parent() else None)
+
     default_value = node.default() if hasattr(node, 'default') and node.default() else None
     node_type = node.keyword()
 
-    if node_type == "leaf":
-        node_type_info = node.type().name() if hasattr(node, 'type') and node.type() else "unknown"
+    if node_type == "leaf" or node_type == "leaf-list":
+        node_type_info = get_type_definition(node)
     else:
         node_type_info = node_type
 
     is_leaf = not hasattr(node, 'children') or not any(node.children())
     node_visual_type = 'file' if is_leaf else 'default'
     node_prefix = ""
-
     if node.keyword() == "rpc":
         node_prefix = "rpc: "
         node_visual_type = 'rpc'
@@ -44,8 +67,7 @@ def generate_tree(node, depth=0):
 
     tree = f'<li data-jstree=\'{{"type": "{node_visual_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}">' \
            f'<abbr title="{description}">{node_prefix}{node.name()}</abbr>'
-
-    logging.debug('%s - %s - %s', node.name(), node_visual_type, node_prefix)
+    logging.debug('item: %s - %s - %s', node.name(), node_visual_type, node_prefix)
 
     if not is_leaf:
         tree += '<ul>'
@@ -127,7 +149,7 @@ def create_html_output(tree_html, output_file):
                 <h2 id="default-heading" style="display: none;">Default</h2>
                 <pre id="default-value" style="display: none;"></pre>
                 <h2>Type</h2>
-                <pre id="node-type"></pre>
+                <pre id="node-type">Select a node in the tree to see its type.</pre>
             </div>
         </div>
     </div>
