@@ -1,19 +1,33 @@
+import os
 import libyang
 
 
-def load_modules(ctx, modules):
+def find_yang_file(yang_dir, module_name):
+    base_module_name = module_name.split('@')[0]
+    for root, _, files in os.walk(yang_dir):
+        for file in files:
+            if file.startswith(base_module_name) and file.endswith(".yang"):
+                return os.path.join(root, file)
+    return None
+
+
+def load_modules(ctx, modules, yang_dir):
     loaded_modules = []
+
     for module_name, features in modules:
-        module = ctx.load_module(module_name.split('@')[0])
-        for feature in features:
-            try:
-                print(f"{module_name}: enabling {feature}")
-                module.feature_enable(feature)
-                onoff = module.feature_state(feature)
-                print(f"{module_name}: feature {feature} is now {onoff}")
-            except libyang.util.LibyangError as err:
-                print(f"Warning: {err}")
-        loaded_modules.append(module)
+        try:
+            module_path = find_yang_file(yang_dir, module_name)
+            if not module_path:
+                print(f"Error: Module file {module_name}.yang not found in {yang_dir}.")
+                continue
+
+            with open(module_path, "r") as module_file:
+                module = ctx.parse_module_file(module_file, features=features)
+                loaded_modules.append(module)
+        except libyang.util.LibyangError as err:
+            print(f"Warning: {err}")
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
     return loaded_modules
 
 

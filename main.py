@@ -27,7 +27,7 @@ def main():
         args.feature = None  # Reset for the next module
 
     ctx = libyang.Context(args.yang_dir)
-    loaded_modules = load_modules(ctx, modules)
+    loaded_modules = load_modules(ctx, modules, args.yang_dir)
 
     tree_html = generate_html_tree(loaded_modules)
     create_html_output(tree_html, args.output)
