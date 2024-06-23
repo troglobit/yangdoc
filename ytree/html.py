@@ -2,16 +2,14 @@ import logging
 
 
 def generate_tree(node, depth=0):
-    if node.description():
-        description = node.description()
-    else:
-        description = "No description available"
-
+    description = node.description() if node.description() else "No description available"
+    default_value = node.default() if hasattr(node, 'default') and node.default() else None
     is_leaf = not hasattr(node, 'children') or not any(node.children())
     node_type = 'file' if is_leaf else 'default'
 
-    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\''  \
-           f'    data-description="{description}">'          \
+    default_attr = f' data-default="{default_value}"' if default_value else ''
+
+    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr}>' \
            f'<abbr title="{description}">{node.name()}</abbr>'
     logging.debug('%s - %s - %s', node.name(), node.keyword(), node.nodetype())
 
@@ -91,8 +89,10 @@ def create_html_output(tree_html, output_file):
             </div>
         </div>
         <div class="content">
-            <h2>Node Description</h2>
-            <pre id="description"></pre>
+            <h2>Description</h2>
+            <pre id="description">Select a node in the tree for its YANG description.</pre>
+            <h2>Default</h2>
+            <pre id="default-value"></pre>
         </div>
     </div>
 
@@ -141,7 +141,9 @@ def create_html_output(tree_html, output_file):
 
             $('#jstree').on('select_node.jstree', function (e, data) {{
                 var description = data.instance.get_node(data.node, true).data('description') || "No description available";
+                var defaultValue = data.instance.get_node(data.node, true).data('default') || "No default value";
                 $('#description').text(description);
+                $('#default-value').text(defaultValue);
             }});
         }});
     </script>
