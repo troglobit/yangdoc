@@ -4,8 +4,11 @@ import logging
 def construct_xpath(node):
     parts = []
     while node:
-        prefix = node.module().name()
-        parts.insert(0, f"{prefix}:{node.name()}")
+        if node.parent() is None:
+            # Root node, include the module name
+            parts.insert(0, f"{node.module().name()}:{node.name()}")
+        else:
+            parts.insert(0, f"{node.module().prefix()}:{node.name()}")
         node = node.parent()
     return "/" + "/".join(parts)
 
@@ -14,60 +17,48 @@ def get_type_definition(node):
     try:
         type_ = node.type()
         if type_:
-            base_type = type_.name()
-            module = type_.module().name() if type_.module() else "unknown"
-            return f"{module}:{base_type}"
-    except AttributeError as e:
+            if hasattr(type_, 'name') and type_.name():
+                return type_.name()
+            elif hasattr(type_, 'base') and type_.base().name():
+                return type_.base().name()
+        return "unknown"
+    except Exception as e:
         logging.error(f"Error getting type definition: {e}")
-        # Fall back to using the base type name directly from the node
-        try:
-            return node.type().name()
-        except AttributeError:
-            return "unknown"
-    return "unknown"
+        return "unknown"
 
 
 def generate_tree(node, depth=0):
-    if node.description():
-        description = node.description()
-    else:
-        description = "No description available"
-
-    logging.debug('node: %s - %s - %s in %s', node.name(), node.keyword(),
-                  node.nodetype(), node.parent().name() if node.parent() else None)
+    description = node.description() if node.description() else "No description available"
+    logging.debug('node: %s - %s - %s in %s', node.name(), node.keyword(), node.nodetype(), node.parent().name() if node.parent() else None)
 
     default_value = node.default() if hasattr(node, 'default') and node.default() else None
-    node_type = node.keyword()
-
-    if node_type == "leaf" or node_type == "leaf-list":
-        node_type_info = get_type_definition(node)
-    else:
-        node_type_info = node_type
-
     is_leaf = not hasattr(node, 'children') or not any(node.children())
-    node_visual_type = 'file' if is_leaf else 'default'
+
+    node_type = 'file' if is_leaf else 'default'
     node_prefix = ""
     if node.keyword() == "rpc":
         node_prefix = "rpc: "
-        node_visual_type = 'rpc'
+        node_type = 'rpc'
     elif node.keyword() == "action":
         node_prefix = "action: "
-        node_visual_type = 'action'
-    elif node.keyword() == "leaf":
+        node_type = 'action'
+    elif node.keyword() in ["leaf", "leaf-list"]:
         parent = node.parent()
+        logging.debug('%s: is a leaf with parent \'%s\'', node.name(), parent.keyword() if parent else None)
         if parent and parent.keyword() == "input":
             node_prefix = "Input: "
-            node_visual_type = 'input'
+            node_type = 'input'
         elif parent and parent.keyword() == "output":
             node_prefix = "Output: "
-            node_visual_type = 'output'
+            node_type = 'output'
 
     xpath = construct_xpath(node)
+    node_type_info = get_type_definition(node) if node.keyword() in ["leaf", "leaf-list"] else "N/A"
     default_attr = f' data-default="{default_value}"' if default_value else ''
 
-    tree = f'<li data-jstree=\'{{"type": "{node_visual_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}">' \
+    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}">' \
            f'<abbr title="{description}">{node_prefix}{node.name()}</abbr>'
-    logging.debug('item: %s - %s - %s', node.name(), node_visual_type, node_prefix)
+    logging.debug('item: %s - %s - %s', node.name(), node_type, node_prefix)
 
     if not is_leaf:
         tree += '<ul>'
@@ -148,8 +139,8 @@ def create_html_output(tree_html, output_file):
                 <pre id="description">Select a node in the tree for its YANG description.</pre>
                 <h2 id="default-heading" style="display: none;">Default</h2>
                 <pre id="default-value" style="display: none;"></pre>
-                <h2>Type</h2>
-                <pre id="node-type">Select a node in the tree to see its type.</pre>
+                <h2 id="type-heading" style="display: none;">Type</h2>
+                <pre id="node-type" style="display: none;"></pre>
             </div>
         </div>
     </div>
@@ -224,7 +215,13 @@ def create_html_output(tree_html, output_file):
                     $('#default-value').hide();
                     $('#default-heading').hide();
                 }}
-                $('#node-type').text(nodeType);
+                if (nodeType && nodeType !== "N/A") {{
+                    $('#node-type').text(nodeType).show();
+                    $('#type-heading').show();
+                }} else {{
+                    $('#node-type').hide();
+                    $('#type-heading').hide();
+                }}
             }});
         }});
     </script>
