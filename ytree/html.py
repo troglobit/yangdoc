@@ -76,7 +76,7 @@ def create_html_output(tree_html, output_file):
     <div class="container-xl mt-4">
         <div class="row">
             <div class="col-md-3">
-                <button id="toggle-all" class="btn btn-default mb-3"><i class="fas fa-plus-circle"></i></button>
+                <button id="toggle-all" class="btn btn-default mb-3"><i class="fas fa-plus-circle me-2"></i>Expand/Collapse All</button>
                 <div id="jstree">
                     {tree_html}
                 </div>
