@@ -1,45 +1,51 @@
 import logging
 
 
+def construct_xpath(node):
+    parts = []
+    while node:
+        prefix = node.module().name()
+        parts.insert(0, f"{prefix}:{node.name()}")
+        node = node.parent()
+    return "/" + "/".join(parts)
+
+
 def generate_tree(node, depth=0):
-    if node.description():
-        description = node.description()
-    else:
-        description = "No description available"
-
-    logging.debug('node: %s - %s - %s in %s', node.name(), node.keyword(),
-                  node.nodetype(), node.parent().name() if node.parent() else None)
-
+    description = node.description() if node.description() else "No description available"
     default_value = node.default() if hasattr(node, 'default') and node.default() else None
-    is_leaf = not hasattr(node, 'children') or not any(node.children())
+    node_type = node.keyword()
 
-    node_type = 'file' if is_leaf else 'default'
+    if node_type == "leaf":
+        node_type_info = node.type().name() if hasattr(node, 'type') and node.type() else "unknown"
+    else:
+        node_type_info = node_type
+
+    is_leaf = not hasattr(node, 'children') or not any(node.children())
+    node_visual_type = 'file' if is_leaf else 'default'
     node_prefix = ""
+
     if node.keyword() == "rpc":
         node_prefix = "rpc: "
-        node_type = 'rpc'
+        node_visual_type = 'rpc'
     elif node.keyword() == "action":
         node_prefix = "action: "
-        node_type = 'action'
+        node_visual_type = 'action'
     elif node.keyword() == "leaf":
         parent = node.parent()
-        logging.debug('%s: is a leaf with parent \'%s\'', node.name(), parent.keyword() if parent else None)
         if parent and parent.keyword() == "input":
-            logging.debug('%s: is an input!', node.name())
             node_prefix = "Input: "
-            node_type = 'input'
+            node_visual_type = 'input'
         elif parent and parent.keyword() == "output":
-            logging.debug('%s: is an output!', node.name())
             node_prefix = "Output: "
-            node_type = 'output'
-        else:
-            logging.debug('%s: is just a leaf ...', node.name())
+            node_visual_type = 'output'
 
+    xpath = construct_xpath(node)
     default_attr = f' data-default="{default_value}"' if default_value else ''
 
-    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr}>' \
+    tree = f'<li data-jstree=\'{{"type": "{node_visual_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}">' \
            f'<abbr title="{description}">{node_prefix}{node.name()}</abbr>'
-    logging.debug('item: %s - %s - %s', node.name(), node_type, node_prefix)
+
+    logging.debug('%s - %s - %s', node.name(), node_visual_type, node_prefix)
 
     if not is_leaf:
         tree += '<ul>'
@@ -74,7 +80,7 @@ def create_html_output(tree_html, output_file):
         body {{
             font-family: Arial, sans-serif;
         }}
-        .container {{
+        .container-xl {{
             max-width: 1200px;
             margin: auto;
         }}
@@ -114,10 +120,14 @@ def create_html_output(tree_html, output_file):
                 </div>
             </div>
             <div class="col-md-9">
+                <h2>XPath</h2>
+                <pre id="xpath">Select a node in the tree to see its XPath.</pre>
                 <h2>Description</h2>
                 <pre id="description">Select a node in the tree for its YANG description.</pre>
                 <h2 id="default-heading" style="display: none;">Default</h2>
                 <pre id="default-value" style="display: none;"></pre>
+                <h2>Type</h2>
+                <pre id="node-type"></pre>
             </div>
         </div>
     </div>
@@ -180,6 +190,10 @@ def create_html_output(tree_html, output_file):
             $('#jstree').on('select_node.jstree', function (e, data) {{
                 var description = data.instance.get_node(data.node, true).data('description') || "No description available";
                 var defaultValue = data.instance.get_node(data.node, true).data('default') || "";
+                var xpath = data.instance.get_node(data.node, true).data('xpath') || "No XPath available";
+                var nodeType = data.instance.get_node(data.node, true).data('node-type') || "No type available";
+
+                $('#xpath').text(xpath);
                 $('#description').text(description);
                 if (defaultValue) {{
                     $('#default-value').text(defaultValue).show();
@@ -188,6 +202,7 @@ def create_html_output(tree_html, output_file):
                     $('#default-value').hide();
                     $('#default-heading').hide();
                 }}
+                $('#node-type').text(nodeType);
             }});
         }});
     </script>
