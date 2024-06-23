@@ -56,6 +56,9 @@ def create_html_output(tree_html, output_file):
         #jstree {{
             margin-top: 20px;
         }}
+        .jstree-icon {{
+            display: none;
+        }}
     </style>
 </head>
 <body>
@@ -85,6 +88,14 @@ def create_html_output(tree_html, output_file):
 
             $('#collapse-all').click(function() {{
                 $('#jstree').jstree('close_all');
+            }});
+
+            $('#jstree').on('open_node.jstree close_node.jstree', function (e, data) {{
+                data.instance.set_icon(data.node, data.node.state.opened ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus');
+            }});
+
+            $('#jstree').jstree(true).get_json('#', {{ 'flat': true }}).forEach(function (node) {{
+                $('#jstree').jstree('set_icon', node.id, 'glyphicon glyphicon-plus');
             }});
         }});
     </script>
