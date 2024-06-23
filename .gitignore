@@ -1,0 +1,8 @@
+.venv/
+build/
+dist/
+*.bak
+*~
+
+*.pyc
+*.html
