@@ -22,8 +22,8 @@ def load_modules(ctx, modules):
 
 def generate_tree(node, depth=0):
     description = node.description() if node.description() else "No description available"
-    tree = f'<li data-jstree=\'{{"opened": true}}\'><abbr title="{description}">{node.name()}</abbr>'
-    print(f'DEBUG: {node.name()} - {node.keyword()} - {node.nodetype()}')
+    tree = f'<li data-jstree=\'{{"opened": false}}\'><abbr title="{description}">{node.name()}</abbr>'
+    print(f'DEBUG: {node.name()} - {node.keyword()} - {node.nodetype()}')  # Debug print
 
     if node.keyword() in ['container', 'list', 'choice', 'case']:
         tree += '<ul>'
@@ -61,6 +61,8 @@ def create_html_output(tree_html, output_file):
 </head>
 <body>
     <h1>YANG Tree View</h1>
+    <button id="expand-all">Expand All</button>
+    <button id="collapse-all">Collapse All</button>
     <div id="jstree">
         {tree_html}
     </div>
@@ -76,6 +78,14 @@ def create_html_output(tree_html, output_file):
                     }}
                 }},
                 "plugins": ["search"]
+            }});
+
+            $('#expand-all').click(function() {{
+                $('#jstree').jstree('open_all');
+            }});
+
+            $('#collapse-all').click(function() {{
+                $('#jstree').jstree('close_all');
             }});
         }});
     </script>
