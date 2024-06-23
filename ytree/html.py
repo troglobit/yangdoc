@@ -42,18 +42,52 @@ def create_html_output(tree_html, output_file):
     <title>YANG Tree View</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         body {{
             font-family: Arial, sans-serif;
-            margin: 20px;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: auto;
+        }}
+        .sidebar {{
+            width: 250px;
+            float: left;
+        }}
+        .content {{
+            margin-left: 270px;
+        }}
+        .navbar-right {{
+            margin-right: 0;
+        }}
+        .navbar-header {{
+            float: left;
         }}
     </style>
 </head>
 <body>
-    <h1>YANG Tree View <input type="text" id="search-box" placeholder="Search..."></h1>
-    <button id="toggle-all"><i class="glyphicon glyphicon-plus-sign"></i></button>
-    <div id="jstree">
-        {tree_html}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"><i class="fas fa-yin-yang"></i> YANG Tree View</a>
+            </div>
+            <div class="navbar-right">
+                <input type="text" class="form-control" id="search-box" placeholder="Search..." style="margin-top: 8px;">
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="sidebar">
+            <button id="toggle-all" class="btn btn-default"><i class="fas fa-plus-circle"></i></button>
+            <div id="jstree">
+                {tree_html}
+            </div>
+        </div>
+        <div class="content">
+            <h2>YANG Module Details</h2>
+            <!-- You can add more content here -->
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -63,19 +97,16 @@ def create_html_output(tree_html, output_file):
             $('#jstree').jstree({{
                 "core": {{
                     "themes": {{
-                        "dots": false,
-                        "responsive": false,
-                        "stripes": true,
-                        "variant": "large"
+                        "dots": false
                     }},
                     "check_callback": true
                 }},
                 "types": {{
                     "default": {{
-                        "icon": "glyphicon glyphicon-folder-close"
+                        "icon": "fas fa-folder"
                     }},
                     "file": {{
-                        "icon": "glyphicon glyphicon-leaf"
+                        "icon": "fas fa-leaf"
                     }}
                 }},
                 "plugins": ["search", "types"]
@@ -85,10 +116,10 @@ def create_html_output(tree_html, output_file):
             $('#toggle-all').click(function() {{
                 if (isExpanded) {{
                     $('#jstree').jstree('close_all');
-                    $(this).find('i').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+                    $(this).find('i').removeClass('fa-minus-circle').addClass('fa-plus-circle');
                 }} else {{
                     $('#jstree').jstree('open_all');
-                    $(this).find('i').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign');
+                    $(this).find('i').removeClass('fa-plus-circle').addClass('fa-minus-circle');
                 }}
                 isExpanded = !isExpanded;
             }});
