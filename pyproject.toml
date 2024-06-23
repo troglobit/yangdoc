@@ -14,10 +14,6 @@ authors = [
 homepage = "https://github.com/troglobit/ytree"
 repository = "https://github.com/troglobit/ytree"
 keywords = ["YANG", "tree", "libyang", "HTML", "jstree"]
-dependencies = [
-    "libyang",
-    "setuptools"
-]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
