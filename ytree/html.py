@@ -2,16 +2,44 @@ import logging
 
 
 def generate_tree(node, depth=0):
-    description = node.description() if node.description() else "No description available"
+    if node.description():
+        description = node.description()
+    else:
+        description = "No description available"
+
+    logging.debug('node: %s - %s - %s in %s', node.name(), node.keyword(),
+                  node.nodetype(), node.parent().name() if node.parent() else None)
+
     default_value = node.default() if hasattr(node, 'default') and node.default() else None
     is_leaf = not hasattr(node, 'children') or not any(node.children())
+
     node_type = 'file' if is_leaf else 'default'
+    node_prefix = ""
+    if node.keyword() == "rpc":
+        node_prefix = "rpc: "
+        node_type = 'rpc'
+    elif node.keyword() == "action":
+        node_prefix = "action: "
+        node_type = 'action'
+    elif node.keyword() == "leaf":
+        parent = node.parent()
+        logging.debug('%s: is a leaf with parent \'%s\'', node.name(), parent.keyword() if parent else None)
+        if parent and parent.keyword() == "input":
+            logging.debug('%s: is an input!', node.name())
+            node_prefix = "Input: "
+            node_type = 'input'
+        elif parent and parent.keyword() == "output":
+            logging.debug('%s: is an output!', node.name())
+            node_prefix = "Output: "
+            node_type = 'output'
+        else:
+            logging.debug('%s: is just a leaf ...', node.name())
 
     default_attr = f' data-default="{default_value}"' if default_value else ''
 
     tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr}>' \
-           f'<abbr title="{description}">{node.name()}</abbr>'
-    logging.debug('%s - %s - %s', node.name(), node.keyword(), node.nodetype())
+           f'<abbr title="{description}">{node_prefix}{node.name()}</abbr>'
+    logging.debug('item: %s - %s - %s', node.name(), node_type, node_prefix)
 
     if not is_leaf:
         tree += '<ul>'
@@ -45,6 +73,10 @@ def create_html_output(tree_html, output_file):
     <style>
         body {{
             font-family: Arial, sans-serif;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: auto;
         }}
         .sidebar {{
             width: 250px;
@@ -107,6 +139,18 @@ def create_html_output(tree_html, output_file):
                     }},
                     "file": {{
                         "icon": "fas fa-leaf"
+                    }},
+                    "rpc": {{
+                        "icon": "fas fa-cog"
+                    }},
+                    "action": {{
+                        "icon": "fas fa-play-circle"
+                    }},
+                    "input": {{
+                        "icon": "fas fa-caret-square-left"
+                    }},
+                    "output": {{
+                        "icon": "fas fa-caret-square-right"
                     }}
                 }},
                 "plugins": ["search", "types"]
