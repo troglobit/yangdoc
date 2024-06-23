@@ -39,16 +39,12 @@ def create_html_output(tree_html, output_file):
 <html>
 <head>
     <title>YANG Tree View</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         body {{
             font-family: Arial, sans-serif;
-        }}
-        .container {{
-            max-width: 1200px;
-            margin: auto;
         }}
         .sidebar {{
             width: 250px;
@@ -56,12 +52,6 @@ def create_html_output(tree_html, output_file):
         }}
         .content {{
             margin-left: 270px;
-        }}
-        .navbar-right {{
-            margin-right: 0;
-        }}
-        .navbar-header {{
-            float: left;
         }}
         pre {{
             white-space: pre-wrap;
@@ -71,28 +61,32 @@ def create_html_output(tree_html, output_file):
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#"><i class="fas fa-yin-yang"></i> YANG Tree View</a>
-            </div>
-            <div class="navbar-right">
-                <input type="text" class="form-control" id="search-box" placeholder="Search..." style="margin-top: 8px;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-xl">
+            <a class="navbar-brand" href="#"><i class="fas fa-yin-yang"></i> YANG Tree View</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <input type="text" class="form-control" id="search-box" placeholder="Search...">
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
-        <div class="sidebar">
-            <button id="toggle-all" class="btn btn-default"><i class="fas fa-plus-circle"></i></button>
-            <div id="jstree">
-                {tree_html}
+    <div class="container-xl mt-4">
+        <div class="row">
+            <div class="col-md-3">
+                <button id="toggle-all" class="btn btn-default mb-3"><i class="fas fa-plus-circle"></i></button>
+                <div id="jstree">
+                    {tree_html}
+                </div>
             </div>
-        </div>
-        <div class="content">
-            <h2>Description</h2>
-            <pre id="description">Select a node in the tree for its YANG description.</pre>
-            <h2>Default</h2>
-            <pre id="default-value"></pre>
+            <div class="col-md-9">
+                <h2>Description</h2>
+                <pre id="description">Select a node in the tree for its YANG description.</pre>
+                <h2>Default</h2>
+                <pre id="default-value"></pre>
+            </div>
         </div>
     </div>
 
