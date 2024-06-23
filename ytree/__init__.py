@@ -16,10 +16,11 @@ def load_modules(ctx, modules):
         loaded_modules.append(module)
     return loaded_modules
 
+
 def generate_tree(node, depth=0):
     description = node.description() if node.description() else "No description available"
     tree = f'<li data-jstree=\'{{"opened": false}}\'><abbr title="{description}">{node.name()}</abbr>'
-    print(f'DEBUG: {node.name()} - {node.keyword()} - {node.nodetype()}')  # Debug print
+    print(f'DEBUG: {node.name()} - {node.keyword()} - {node.nodetype()}')
 
     if node.keyword() in ['container', 'list', 'choice', 'case']:
         tree += '<ul>'
@@ -29,6 +30,7 @@ def generate_tree(node, depth=0):
     tree += '</li>'
     return tree
 
+
 def generate_html_tree(modules):
     tree_html = '<ul>'
     for module in modules:
@@ -37,6 +39,7 @@ def generate_html_tree(modules):
             tree_html += generate_tree(node)
     tree_html += '</ul>'
     return tree_html
+
 
 def create_html_output(tree_html, output_file):
     html_template = f"""
