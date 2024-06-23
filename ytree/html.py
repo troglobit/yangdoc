@@ -100,7 +100,7 @@ def create_html_output(tree_html, output_file):
     <title>YANG Tree View</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
     <style>
         body {{
             font-family: Arial, sans-serif;
@@ -126,7 +126,7 @@ def create_html_output(tree_html, output_file):
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-xl">
-            <a class="navbar-brand" href="#"><i class="fas fa-yin-yang"></i> YANG Tree View</a>
+            <a class="navbar-brand" href="#"><i class="bi bi-yin-yang"></i> YANG Tree View</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -139,7 +139,7 @@ def create_html_output(tree_html, output_file):
     <div class="container-xl mt-4">
         <div class="row">
             <div class="col-md-3">
-                <button id="toggle-all" class="btn btn-default mb-3"><i class="fas fa-plus-circle me-2"></i>Expand/Collapse All</button>
+                <button id="toggle-all" class="btn btn-default mb-3"><i class="bi bi-plus-circle me-2"></i>Expand/Collapse All</button>
                 <div id="jstree">
                     {tree_html}
                 </div>
@@ -149,10 +149,10 @@ def create_html_output(tree_html, output_file):
                 <pre id="xpath">Select a node in the tree to see its XPath.</pre>
                 <h2>Description</h2>
                 <pre id="description">Select a node in the tree for its YANG description.</pre>
-                <h2 id="default-heading" style="display: none;">Default</h2>
-                <pre id="default-value" style="display: none;"></pre>
                 <h2 id="type-heading" style="display: none;">Type</h2>
                 <pre id="node-type" style="display: none;"></pre>
+                <h2 id="default-heading" style="display: none;">Default</h2>
+                <pre id="default-value" style="display: none;"></pre>
             </div>
         </div>
     </div>
@@ -170,22 +170,22 @@ def create_html_output(tree_html, output_file):
                 }},
                 "types": {{
                     "default": {{
-                        "icon": "fas fa-folder"
+                        "icon": "bi bi-folder-plus"
                     }},
                     "file": {{
-                        "icon": "fas fa-leaf"
+                        "icon": "bi bi-geo-alt"
                     }},
                     "rpc": {{
-                        "icon": "fas fa-cog"
+                        "icon": "bi bi-gear"
                     }},
                     "action": {{
-                        "icon": "fas fa-play-circle"
+                        "icon": "bi bi-play-circle"
                     }},
                     "input": {{
-                        "icon": "fas fa-caret-square-left"
+                        "icon": "bi bi-box-arrow-in-left"
                     }},
                     "output": {{
-                        "icon": "fas fa-caret-square-right"
+                        "icon": "bi bi-box-arrow-right"
                     }}
                 }},
                 "plugins": ["search", "types"]
@@ -195,10 +195,10 @@ def create_html_output(tree_html, output_file):
             $('#toggle-all').click(function() {{
                 if (isExpanded) {{
                     $('#jstree').jstree('close_all');
-                    $(this).find('i').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                    $(this).find('i').removeClass('bi-dash-circle').addClass('bi-plus-circle');
                 }} else {{
                     $('#jstree').jstree('open_all');
-                    $(this).find('i').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                    $(this).find('i').removeClass('bi-plus-circle').addClass('bi-dash-circle');
                 }}
                 isExpanded = !isExpanded;
             }});
@@ -234,6 +234,14 @@ def create_html_output(tree_html, output_file):
                     $('#node-type').hide();
                     $('#type-heading').hide();
                 }}
+            }});
+
+            $('#jstree').on('open_node.jstree', function (e, data) {{
+                data.instance.set_icon(data.node, 'bi bi-folder-minus');
+            }});
+
+            $('#jstree').on('close_node.jstree', function (e, data) {{
+                data.instance.set_icon(data.node, 'bi bi-folder-plus');
             }});
         }});
     </script>
