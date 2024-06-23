@@ -1,5 +1,6 @@
 import os
 import libyang
+import logging
 
 
 def find_yang_file(yang_dir, module_name):
@@ -11,30 +12,28 @@ def find_yang_file(yang_dir, module_name):
     return None
 
 
-def load_modules(ctx, modules, yang_dir):
-    loaded_modules = []
+def load_module(ctx, module_name, features, yang_dir):
+    try:
+        module_path = find_yang_file(yang_dir, module_name)
+        if not module_path:
+            logging.error(f"Error: Module file {module_name} not found in {yang_dir}.")
+            return None
 
-    for module_name, features in modules:
-        try:
-            module_path = find_yang_file(yang_dir, module_name)
-            if not module_path:
-                print(f"Error: Module file {module_name}.yang not found in {yang_dir}.")
-                continue
-
-            with open(module_path, "r") as module_file:
-                module = ctx.parse_module_file(module_file, features=features)
-                loaded_modules.append(module)
-        except libyang.util.LibyangError as err:
-            print(f"Warning: {err}")
-        except FileNotFoundError as e:
-            print(f"Error: {e}")
-    return loaded_modules
+        with open(module_path, "r", encoding="utf-8") as module_file:
+            logging.info(f"Parsing {module_name}, enabling features: {features}")
+            module = ctx.parse_module_file(module_file, features=features)
+            return module
+    except libyang.util.LibyangError as err:
+        logging.warning(f"Warning: {err}")
+    except FileNotFoundError as err:
+        logging.error(f"Error: {err}")
+    return None
 
 
 def generate_tree(node, depth=0):
     description = node.description() if node.description() else "No description available"
     tree = f'<li data-jstree=\'{{"opened": false}}\'><abbr title="{description}">{node.name()}</abbr>'
-    print(f'DEBUG: {node.name()} - {node.keyword()} - {node.nodetype()}')
+    logging.debug("%s - %s - %s", node.name(), node.keyword(), node.nodetype())
 
     if node.keyword() in ['container', 'list', 'choice', 'case']:
         tree += '<ul>'
@@ -48,7 +47,7 @@ def generate_tree(node, depth=0):
 def generate_html_tree(modules):
     tree_html = '<ul>'
     for module in modules:
-        print(f'DEBUG: Processing module {module.name()}')  # Debug print
+        logging.info("Processing module %s", module.name())
         for node in module.children():
             tree_html += generate_tree(node)
     tree_html += '</ul>'
@@ -117,7 +116,7 @@ def create_html_output(tree_html, output_file):
 </html>
 """
 
-    with open(output_file, 'w') as f:
-        f.write(html_template)
+    with open(output_file, 'w', encoding="utf-8") as file:
+        file.write(html_template)
 
-    print(f"HTML file generated: {output_file}")
+    logging.info("HTML file generated: %s", output_file)
