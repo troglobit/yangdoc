@@ -10,7 +10,8 @@ def generate_tree(node, depth=0):
     is_leaf = not hasattr(node, 'children') or not any(node.children())
     node_type = 'file' if is_leaf else 'default'
 
-    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\'>' \
+    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\''  \
+           f'    data-description="{description}">'          \
            f'<abbr title="{description}">{node.name()}</abbr>'
     logging.debug('%s - %s - %s', node.name(), node.keyword(), node.nodetype())
 
@@ -64,6 +65,11 @@ def create_html_output(tree_html, output_file):
         .navbar-header {{
             float: left;
         }}
+        pre {{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+        }}
     </style>
 </head>
 <body>
@@ -85,8 +91,8 @@ def create_html_output(tree_html, output_file):
             </div>
         </div>
         <div class="content">
-            <h2>YANG Module Details</h2>
-            <!-- You can add more content here -->
+            <h2>Node Description</h2>
+            <pre id="description"></pre>
         </div>
     </div>
 
@@ -131,6 +137,11 @@ def create_html_output(tree_html, output_file):
                     var v = $('#search-box').val();
                     $('#jstree').jstree(true).search(v);
                 }}, 250);
+            }});
+
+            $('#jstree').on('select_node.jstree', function (e, data) {{
+                var description = data.instance.get_node(data.node, true).data('description') || "No description available";
+                $('#description').text(description);
             }});
         }});
     </script>
