@@ -84,8 +84,8 @@ def create_html_output(tree_html, output_file):
             <div class="col-md-9">
                 <h2>Description</h2>
                 <pre id="description">Select a node in the tree for its YANG description.</pre>
-                <h2>Default</h2>
-                <pre id="default-value"></pre>
+                <h2 id="default-heading" style="display: none;">Default</h2>
+                <pre id="default-value" style="display: none;"></pre>
             </div>
         </div>
     </div>
@@ -135,9 +135,15 @@ def create_html_output(tree_html, output_file):
 
             $('#jstree').on('select_node.jstree', function (e, data) {{
                 var description = data.instance.get_node(data.node, true).data('description') || "No description available";
-                var defaultValue = data.instance.get_node(data.node, true).data('default') || "No default value";
+                var defaultValue = data.instance.get_node(data.node, true).data('default') || "";
                 $('#description').text(description);
-                $('#default-value').text(defaultValue);
+                if (defaultValue) {{
+                    $('#default-value').text(defaultValue).show();
+                    $('#default-heading').show();
+                }} else {{
+                    $('#default-value').hide();
+                    $('#default-heading').hide();
+                }}
             }});
         }});
     </script>
