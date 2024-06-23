@@ -1,28 +1,37 @@
 import argparse
 import libyang
-from ytree import parse_modules, load_modules, generate_html_tree, create_html_output
+from ytree import load_modules, generate_html_tree, create_html_output
+
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate YANG tree view HTML from YANG modules.")
-    parser.add_argument('modules', nargs='+', help='List of YANG modules with optional features (e.g., "foo@date.yang -e featureA -e featureB").')
-    parser.add_argument('--output', default='yang_tree_view.html', help='Output HTML file')
-    parser.add_argument('--yang-dir', required=True, help='Directory containing YANG modules')
+    parser = argparse.ArgumentParser(description="Generate YANG tree view.")
+    parser.add_argument('--yang-dir', required=True,
+                        help='Search path, used recursively')
+    parser.add_argument('-m', '--module', action='append',
+                        help='YANG module, e.g., ietf-system')
+    parser.add_argument('-e', '--feature', action='append',
+                        help='Enable features for the last module, e.g., ntp')
+    parser.add_argument('-o', '--output', default='ytree.html',
+                        help='Output HTML')
+
     args = parser.parse_args()
+    if not args.module:
+        parser.error('No modules specified. Use -m to specify modules.')
 
-    # Initialize the libyang context with the directory containing YANG modules
+    modules = []
+    current_features = []
+    for module in args.module:
+        if args.feature:
+            current_features = [feature for feature in args.feature if feature]
+        modules.append((module, current_features))
+        args.feature = None  # Reset for the next module
+
     ctx = libyang.Context(args.yang_dir)
-
-    # Parse the modules and features
-    modules = parse_modules(args.modules)
-
-    # Load the modules with enabled features
     loaded_modules = load_modules(ctx, modules)
 
-    # Generate the tree structure for the loaded modules
     tree_html = generate_html_tree(loaded_modules)
-
-    # Create the HTML output
     create_html_output(tree_html, args.output)
+
 
 if __name__ == '__main__':
     main()

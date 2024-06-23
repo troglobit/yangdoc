@@ -1,22 +1,18 @@
 import libyang
-import re
 
-def parse_modules(modules):
-    parsed_modules = []
-    for module in modules:
-        match = re.match(r'(\S+)\s*(.*)', module)
-        if match:
-            module_name = match.group(1)
-            features = re.findall(r'-e\s+(\S+)', match.group(2))
-            parsed_modules.append((module_name, features))
-    return parsed_modules
 
 def load_modules(ctx, modules):
     loaded_modules = []
     for module_name, features in modules:
         module = ctx.load_module(module_name.split('@')[0])
         for feature in features:
-            module.feature_enable(feature)
+            try:
+                print(f"{module_name}: enabling {feature}")
+                module.feature_enable(feature)
+                onoff = module.feature_state(feature)
+                print(f"{module_name}: feature {feature} is now {onoff}")
+            except libyang.util.LibyangError as err:
+                print(f"Warning: {err}")
         loaded_modules.append(module)
     return loaded_modules
 
