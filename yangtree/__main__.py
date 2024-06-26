@@ -1,23 +1,23 @@
 import sys
 import libyang
 import logging
-from ytree import load_module
-from ytree.html import generate_html_tree, create_html_output
+from yangtree import load_module
+from yangtree.html import generate_html_tree, create_html_output
 
 
 def usage():
-    text = """Usage: ytree [options]
+    text = """Usage: yangtree [options]
 
 Options:
   -p, --yang-dir <path>    YANG module search path
   -m, --module <module>    YANG module to load
   -e, --feature <feature>  Feature(s) for current module
-  -o, --output <file>      Output HTML file, default: ytree.html
+  -o, --output <file>      Output HTML file, default: yangtree.html
   -d, --debug              Enable debug output
   -h, --help               Show this help message and exit
 
 Example:
-  ytree -m ietf-system -e authentication -e ntp -m ietf-system -e if-mib
+  yangtree -m ietf-system -e authentication -e ntp -m ietf-system -e if-mib
 """
     print(text)
 
@@ -28,7 +28,7 @@ def main():
 
     module_features = {}
     yang_dir = None
-    output_file = 'ytree.html'
+    output_file = 'yangtree.html'
     current_module = None
     debug = False
 
