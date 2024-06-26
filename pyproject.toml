@@ -31,5 +31,8 @@ dependencies = [
 homepage = "https://github.com/troglobit/yangtree"
 repository = "https://github.com/troglobit/yangtree"
 
+[project.scripts]
+yangtree = "yangtree.__main__:main"
+
 [tool.setuptools]
 packages = ["yangtree"]
