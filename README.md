@@ -67,4 +67,10 @@ Use pip-compile from pip-tools to [manage Python requirements][4], this
 makes life a lot easier since we only need pyproject.toml for all our
 packaging needs.
 
+To install locally, verifying pyproject.toml:
+
+```
+~/src/ytree(main)$ pip install -e .
+```
+
 [1]: https://massimilianobruni-92986.medium.com/fix-your-python-requirements-with-pip-tools-856765d8c061
