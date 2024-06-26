@@ -8,7 +8,7 @@ version = "0.2.0"
 description = "A project for generating YANG tree views."
 readme = "README.md"
 license = { file = "LICENSE" }
-authors = [{ name="Joachim Wiberg", email="troglobit@gmail.com" }]
+authors = [{ name="Joachim Wiberg" }]
 keywords = ["YANG", "tree", "libyang", "HTML", "jstree"]
 classifiers = [
     "Development Status :: 3 - Alpha",
