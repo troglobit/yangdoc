@@ -58,3 +58,13 @@ Install all required packages:
 ~/src/ytree(main)$ sudo apt install libyang2
 ~/src/ytree(main)$ pip install -r requirements.txt
 ```
+
+
+Developer Notes
+---------------
+
+Use pip-compile from pip-tools to [manage Python requirements][4], this
+makes life a lot easier since we only need pyproject.toml for all our
+packaging needs.
+
+[1]: https://massimilianobruni-92986.medium.com/fix-your-python-requirements-with-pip-tools-856765d8c061
