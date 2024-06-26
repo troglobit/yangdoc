@@ -61,6 +61,10 @@ def main():
                 module_features[current_module].append(feature)
         i += 1
 
+    if not module_features:
+        usage()
+        return
+
     if not yang_dir:
         print("Error: -p is required")
         usage()
