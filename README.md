@@ -32,8 +32,8 @@ Screenshot
 Setup
 -----
 
-> The following instructions have been tested on Linux Mint but are
-> mostly the same for other operating systems.
+> The following instructions have been tested on Linux Mint 21.3, but
+> are mostly the same for other operating systems.
 
 Clone the repository to your home directory:
 
@@ -67,10 +67,31 @@ Use pip-compile from pip-tools to [manage Python requirements][4], this
 makes life a lot easier since we only need pyproject.toml for all our
 packaging needs.
 
-To install locally, verifying pyproject.toml:
+To install locally, or just build, verifying pyproject.toml:
 
 ```
 ~/src/ytree(main)$ pip install -e .
+~/src/ytree(main)$ python -m build
 ```
+
+For uploading to PyPi, remember to install twine:
+
+```
+~/src/ytree(main)$ pip install twine
+```
+
+Then build and test upload:
+
+```
+~/src/ytree(main)$ python -m build
+~/src/ytree(main)$ twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+```
+
+Verify upload and then upload to PyPi proper:
+
+```
+~/src/ytree(main)$ twine upload dist/*
+```
+
 
 [1]: https://massimilianobruni-92986.medium.com/fix-your-python-requirements-with-pip-tools-856765d8c061
