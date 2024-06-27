@@ -124,6 +124,8 @@ def create_html_output(tree_html, output_file):
             overflow-y: auto;
             position: fixed;
             top: 70px;
+            resize: horizontal;
+            overflow-x: hidden; /* Hide horizontal scrollbar */
         }}
         .content {{
             margin-left: 370px;
@@ -259,6 +261,16 @@ def create_html_output(tree_html, output_file):
             $('#jstree').on('close_node.jstree', function (e, data) {{
                 data.instance.set_icon(data.node, 'bi bi-folder-plus');
             }});
+
+            // Handle sidebar resizing
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+
+            new ResizeObserver(entries => {{
+                for (let entry of entries) {{
+                    content.style.marginLeft = `${{entry.contentRect.width + 50}}px`;
+                }}
+            }}).observe(sidebar);
         }});
     </script>
 </body>
