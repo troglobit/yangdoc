@@ -32,7 +32,7 @@ Screenshot
 Setup
 -----
 
-> The following instructions have been tested on Linux Mint 21.3, but
+> These instructions have been tested on Linux Mint 21.3, but
 > are mostly the same for other operating systems.
 
 Clone the repository to your home directory:
