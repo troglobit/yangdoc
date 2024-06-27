@@ -9,12 +9,13 @@ def usage():
     text = """Usage: yangtree [options]
 
 Options:
-  -p, --yang-dir <path>    YANG module search path
-  -m, --module <module>    YANG module to load
-  -e, --feature <feature>  Feature(s) for current module
-  -o, --output <file>      Output HTML file, default: yangtree.html
-  -d, --debug              Enable debug output
-  -h, --help               Show this help message and exit
+  -d, --debug               Enable debug output
+  -e, --feature  <feature>  Feature(s) for current module
+  -h, --help                Show this help message and exit
+  -m, --module   <module>   YANG module to load
+  -o, --output   <file>     Output HTML file, default: yangtree.html
+  -p, --yang-dir <path>     YANG module search path
+  -x, --exclude  <node>     Exclude top-level container/node
 
 Example:
   yangtree -m ietf-system -e authentication -e ntp -m ietf-system -e if-mib
@@ -31,6 +32,7 @@ def main():
     output_file = 'yangtree.html'
     current_module = None
     debug = False
+    exclusions = []
 
     i = 0
     while i < len(arguments):
@@ -59,6 +61,10 @@ def main():
             if i < len(arguments) and current_module:
                 feature = arguments[i]
                 module_features[current_module].append(feature)
+        elif arg in ['-x', '--exclude']:
+            i += 1
+            if i < len(arguments):
+                exclusions.append(arguments[i])
         i += 1
 
     if not module_features:
@@ -83,7 +89,7 @@ def main():
         if loaded_module:
             modules.append(loaded_module)
 
-    tree_html = generate_html_tree(modules)
+    tree_html = generate_html_tree(modules, ctx, exclusions)
     create_html_output(tree_html, output_file)
 
 

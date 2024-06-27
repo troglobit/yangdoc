@@ -17,17 +17,14 @@ def get_type_definition(node):
     try:
         type_ = node.type()
         if type_:
-            if hasattr(type_, 'name') and type_.name():
-                return type_.name()
-            if hasattr(type_, 'base') and type_.base().name():
-                return type_.base().name()
+            return type_.name()
         return "unknown"
     except Exception as err:
         logging.error("Error getting type definition: %s", err)
         return "unknown"
 
 
-def generate_tree(node, depth=0):
+def generate_tree(node, depth=0, ctx=None, exclusions=None):
     logging.debug('%s: is a %s type %s in %s', node.name(),
                   node.keyword(), node.nodetype(),
                   node.parent().name() if node.parent() else None)
@@ -41,6 +38,14 @@ def generate_tree(node, depth=0):
     else:
         default_value = None
         default_attr = ''
+
+    if exclusions is None:
+        exclusions = []
+
+    if node.name() in exclusions and depth == 0:
+        logging.info("Excluding top-level node %s", node.name())
+        return ""
+
     is_leaf = not hasattr(node, 'children') or not any(node.children())
 
     node_type = 'file' if is_leaf else 'default'
@@ -78,19 +83,19 @@ def generate_tree(node, depth=0):
     if not is_leaf:
         tree += '<ul>'
         for child in node.children():
-            tree += generate_tree(child, depth + 1)
+            tree += generate_tree(child, depth + 1, ctx, exclusions)
         tree += '</ul>'
     tree += '</li>'
 
     return tree
 
 
-def generate_html_tree(modules):
+def generate_html_tree(modules, ctx, exclusions):
     tree_html = '<ul>'
     for module in modules:
         logging.info('Processing module %s', module.name())
         for node in module.children():
-            tree_html += generate_tree(node)
+            tree_html += generate_tree(node, ctx=ctx, exclusions=exclusions)
     tree_html += '</ul>'
     return tree_html
 
