@@ -51,6 +51,9 @@ def generate_tree(node, depth=0):
     elif node.keyword() == "action":
         node_prefix = "action: "
         node_type = 'action'
+    elif node.keyword() == "notification":
+        node_prefix = "notify: "
+        node_type = 'notification'
     elif node.keyword() in ["leaf", "leaf-list"]:
         parent = node.parent()
         logging.debug('%s: is a leaf with parent \'%s\'', node.name(),
@@ -180,6 +183,9 @@ def create_html_output(tree_html, output_file):
                     }},
                     "action": {{
                         "icon": "bi bi-play-circle"
+                    }},
+                    "notification": {{
+                        "icon": "bi bi-bell"
                     }},
                     "input": {{
                         "icon": "bi bi-box-arrow-in-left"
