@@ -16,7 +16,7 @@ def get_git_version():
 
 def get_version():
     try:
-        return importlib.metadata.version("yangtree")
+        return importlib.metadata.version("yangdoc")
     except Exception as err:
         logging.debug("Not installed, using git version: %s", err)
         return get_git_version()

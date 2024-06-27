@@ -1,25 +1,25 @@
 import sys
 import libyang
 import logging
-from yangtree import load_module, get_version
-from yangtree.html import generate_html_tree, create_html_output
+from yangdoc import load_module, get_version
+from yangdoc.html import generate_html_tree, create_html_output
 
 
 def usage():
-    text = """Usage: yangtree [options]
+    text = """Usage: yangdoc [options]
 
 Options:
   -d, --debug               Enable debug output
   -e, --feature  <feature>  Feature(s) for current module
   -h, --help                Show this help message and exit
   -m, --module   <module>   YANG module to load
-  -o, --output   <file>     Output HTML file, default: yangtree.html
+  -o, --output   <file>     Output HTML file, default: yangdoc.html
   -p, --yang-dir <path>     YANG module search path
   -x, --exclude  <node>     Exclude top-level container/node
   -v, --version             Show the version and exit
 
 Example:
-  yangtree -m ietf-system -e authentication -e ntp -m ietf-system -e if-mib
+  yangdoc -m ietf-system -e authentication -e ntp -m ietf-system -e if-mib
 """
     print(text)
 
@@ -30,7 +30,7 @@ def main():
 
     module_features = {}
     yang_dir = None
-    output_file = 'yangtree.html'
+    output_file = 'yangdoc.html'
     current_module = None
     debug = False
     exclusions = []

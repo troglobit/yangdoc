@@ -7,10 +7,10 @@
 cffi==1.16.0
     # via
     #   libyang
-    #   yangtree (pyproject.toml)
+    #   yangdoc (pyproject.toml)
 libyang==2.7.1
-    # via yangtree (pyproject.toml)
+    # via yangdoc (pyproject.toml)
 pycparser==2.22
     # via
     #   cffi
-    #   yangtree (pyproject.toml)
+    #   yangdoc (pyproject.toml)

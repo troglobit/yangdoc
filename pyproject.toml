@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel", "pip-tools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "yangtree"
+name = "yangdoc"
 version = "0.4.0"
 description = "A project for generating YANG tree views."
 readme = "README.md"
@@ -28,11 +28,11 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/troglobit/yangtree"
-repository = "https://github.com/troglobit/yangtree"
+homepage = "https://github.com/troglobit/yangdoc"
+repository = "https://github.com/troglobit/yangdoc"
 
 [project.scripts]
-yangtree = "yangtree.__main__:main"
+yangdoc = "yangdoc.__main__:main"
 
 [tool.setuptools]
-packages = ["yangtree"]
+packages = ["yangdoc"]

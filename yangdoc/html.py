@@ -105,7 +105,7 @@ def create_html_output(tree_html, output_file):
 <!DOCTYPE html>
 <html>
 <head>
-    <title>YANG Tree View</title>
+    <title>YANG Documentation</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
@@ -141,7 +141,7 @@ def create_html_output(tree_html, output_file):
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-xl">
-            <a class="navbar-brand" href="#"><i class="bi bi-yin-yang"></i> YANG Tree View</a>
+            <a class="navbar-brand" href="#"><i class="bi bi-yin-yang"></i> YANG Documentation</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">

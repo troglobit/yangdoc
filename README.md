@@ -1,9 +1,10 @@
-YANG Tree Viewer
-================
+YANG Documentation Viewer
+=========================
 
-Very limited YANG tree viewer based on libyang, similar output to that
-of `pyang -f jstree`.  The default output is a standalone HTML file,
-called `yangtree.html`, that can be included in documentation bundles.
+Very limited YANG Documentation generator based on libyang, with similar
+output to that of `pyang -f jstree`.  The default output is a standalone
+HTML file, called `yangdoc.html`, that can be included in documentation
+bundles.
 
 
 Usage
@@ -12,14 +13,14 @@ Usage
 See below [setup instructions](#setup) first.
 
 ```
-~/src/yangtree(main)$ python main.py -p yang -m ietf-system -e authentication -e local-users -e ntp -e ntp-udp-port -e timezone-name -m ietf-interfaces -e if-mib
+~/src/yangdoc(main)$ python main.py -p yang -m ietf-system -e authentication -e local-users -e ntp -e ntp-udp-port -e timezone-name -m ietf-interfaces -e if-mib
 INFO: Parsing ietf-system, enabling features: ['authentication', 'local-users', 'ntp', 'ntp-udp-port', 'timezone-name']
 WARNING: Warning: failed to parse module: Data model "ietf-netconf-acm" not found in local searchdirs.: Loading "ietf-netconf-acm" module failed.: Parsing module "ietf-system" failed.
 INFO: Parsing ietf-interfaces, enabling features: ['if-mib']
 INFO: Processing module ietf-interfaces
-INFO: HTML file generated: yangtree.html
+INFO: HTML file generated: yangdoc.html
 x-www-browser yang_tree_view.html
-~/src/yangtree(main)$ x-www-browser yang_tree_view.html
+~/src/yangdoc(main)$ x-www-browser yang_tree_view.html
 ```
 
 
@@ -39,24 +40,24 @@ Clone the repository to your home directory:
 
 ```
 ~$ cd src/
-~/src$ git clone https://github.com/troglobit/yangtree
-~/src$ cd yangtree
-~/src/yangtree(main)$
+~/src$ git clone https://github.com/troglobit/yangdoc
+~/src$ cd yangdoc
+~/src/yangdoc(main)$
 ```
 
 Set up your virtual environment, this ensures all python packages
 installed from `requirements.txt` are installed only in `.venv/`:
 
 ```
-~/src/yangtree(main)$ python -m venv .venv
-~/src/yangtree(main)$ source .venv/bin/activate
+~/src/yangdoc(main)$ python -m venv .venv
+~/src/yangdoc(main)$ source .venv/bin/activate
 ```
 
 Install all required packages:
 
 ```
-~/src/yangtree(main)$ sudo apt install libyang2
-~/src/yangtree(main)$ pip install -r requirements.txt
+~/src/yangdoc(main)$ sudo apt install libyang2
+~/src/yangdoc(main)$ pip install -r requirements.txt
 ```
 
 
@@ -70,27 +71,27 @@ our packaging needs.
 To install locally, or just build, verifying pyproject.toml:
 
 ```
-~/src/yangtree(main)$ pip install -e .
-~/src/yangtree(main)$ python -m build
+~/src/yangdoc(main)$ pip install -e .
+~/src/yangdoc(main)$ python -m build
 ```
 
 For uploading to PyPi, remember to install twine:
 
 ```
-~/src/yangtree(main)$ pip install twine
+~/src/yangdoc(main)$ pip install twine
 ```
 
 Then build and test upload:
 
 ```
-~/src/yangtree(main)$ python -m build
-~/src/yangtree(main)$ twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+~/src/yangdoc(main)$ python -m build
+~/src/yangdoc(main)$ twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 ```
 
 Verify upload and then upload to PyPi proper:
 
 ```
-~/src/yangtree(main)$ twine upload dist/*
+~/src/yangdoc(main)$ twine upload dist/*
 ```
 
 
