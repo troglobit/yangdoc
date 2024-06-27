@@ -1,7 +1,7 @@
 import sys
 import libyang
 import logging
-from yangtree import load_module
+from yangtree import load_module, get_version
 from yangtree.html import generate_html_tree, create_html_output
 
 
@@ -16,6 +16,7 @@ Options:
   -o, --output   <file>     Output HTML file, default: yangtree.html
   -p, --yang-dir <path>     YANG module search path
   -x, --exclude  <node>     Exclude top-level container/node
+  -v, --version             Show the version and exit
 
 Example:
   yangtree -m ietf-system -e authentication -e ntp -m ietf-system -e if-mib
@@ -39,6 +40,9 @@ def main():
         arg = arguments[i]
         if arg in ['-h', '--help']:
             usage()
+            return
+        if arg in ['-v', '--version']:
+            print(f"Version {get_version()}")
             return
         if arg in ['-d', '--debug']:
             debug = True

@@ -1,6 +1,25 @@
 import os
 import libyang
 import logging
+import importlib.metadata
+import subprocess
+
+
+def get_git_version():
+    try:
+        output = subprocess.check_output(["git", "describe", "--tags"])
+        return output.strip().decode('utf-8')
+    except Exception as err:
+        logging.debug("Git describe failed: %s", err)
+        return "0.0.0"
+
+
+def get_version():
+    try:
+        return importlib.metadata.version("yangtree")
+    except Exception as err:
+        logging.debug("Not installed, using git version: %s", err)
+        return get_git_version()
 
 
 def find_yang_file(yang_dir, module_name):
