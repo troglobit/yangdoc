@@ -112,17 +112,22 @@ def create_html_output(tree_html, output_file):
     <style>
         body {{
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }}
         .container-xl {{
             max-width: 1200px;
             margin: auto;
         }}
         .sidebar {{
-            width: 250px;
-            float: left;
+            width: 350px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            position: fixed;
+            top: 70px;
         }}
         .content {{
-            margin-left: 270px;
+            margin-left: 370px;
+            padding-top: 50px;
         }}
         pre {{
             white-space: pre-wrap;
@@ -146,13 +151,13 @@ def create_html_output(tree_html, output_file):
     </nav>
     <div class="container-xl mt-4">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 sidebar">
                 <button id="toggle-all" class="btn btn-default mb-3"><i class="bi bi-plus-circle me-2"></i>Expand/Collapse All</button>
                 <div id="jstree">
                     {tree_html}
                 </div>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9 content">
                 <h2>XPath</h2>
                 <pre id="xpath">Select a node in the tree to see its XPath.</pre>
                 <h2>Description</h2>
