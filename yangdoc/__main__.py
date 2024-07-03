@@ -93,7 +93,7 @@ def main():
         if loaded_module:
             modules.append(loaded_module)
 
-    tree_html = generate_html_tree(modules, ctx, exclusions)
+    tree_html = generate_html_tree(ctx, exclusions)
     create_html_output(tree_html, output_file)
 
 

@@ -90,9 +90,9 @@ def generate_tree(node, depth=0, ctx=None, exclusions=None):
     return tree
 
 
-def generate_html_tree(modules, ctx, exclusions):
+def generate_html_tree(ctx, exclusions):
     tree_html = '<ul>'
-    for module in modules:
+    for module in ctx:
         logging.info('Processing module %s', module.name())
         for node in module.children():
             tree_html += generate_tree(node, ctx=ctx, exclusions=exclusions)
