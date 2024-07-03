@@ -173,15 +173,15 @@ def create_html_output(tree_html, output_file):
                 </div>
             </div>
             <div class="col-md-9 content">
-                <h2>XPath</h2>
+                <h3>XPath</h3>
                 <pre id="xpath">Select a node in the tree to see its XPath.</pre>
-                <h2>Description</h2>
+                <h3>Description</h3>
                 <pre id="description">Select a node in the tree for its YANG description.</pre>
-                <h2 id="type-heading" style="display: none;">Type</h2>
+                <h3 id="type-heading" style="display: none;">Type</h3>
                 <pre id="node-type" style="display: none;"></pre>
-                <h2 id="mandatory-heading" style="display: none;">Mandatory</h2>
+                <h3 id="mandatory-heading" style="display: none;">Mandatory</h3>
                 <pre id="node-mandatory" style="display: none;"></pre>
-                <h2 id="default-heading" style="display: none;">Default</h2>
+                <h3 id="default-heading" style="display: none;">Default</h2>
                 <pre id="default-value" style="display: none;"></pre>
             </div>
         </div>
