@@ -142,6 +142,8 @@ def create_html_output(tree_html, output_file):
         }}
         .content {{
             margin-left: 370px;
+            height: calc(100vh - 120px); /* Adjust this value if needed */
+            overflow-y: auto;
             padding-top: 50px;
         }}
         pre {{
