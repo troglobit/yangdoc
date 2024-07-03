@@ -38,10 +38,8 @@ def generate_tree(node, depth=0, ctx=None, exclusions=None):
     else:
         description = "No description available"
     if hasattr(node, 'default') and node.default():
-        default_value = node.default()
-        default_attr = f' data-default="{default_value}"'
+        default_attr = f' data-default="{node.default()}"'
     else:
-        default_value = None
         default_attr = ''
 
     if exclusions is None:
@@ -81,7 +79,17 @@ def generate_tree(node, depth=0, ctx=None, exclusions=None):
     else:
         node_type_info = "N/A"
 
-    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}">' \
+    if node.mandatory():
+        mandatory = ' data-mandatory="Yes"'
+    else:
+        mandatory = ''
+
+    if node.config_false():
+        read_only = ' data-read-only="(read-only)"'
+    else:
+        read_only = ''
+
+    tree = f'<li data-jstree=\'{{"type": "{node_type}"}}\' data-description="{description}"{default_attr} data-xpath="{xpath}" data-node-type="{node_type_info}"{mandatory}{read_only}>' \
            f'<abbr title="{description}">{node_prefix}{node.name()}</abbr>'
     logging.debug('item: %s - %s - %s', node.name(), node_type, node_prefix)
 
@@ -171,6 +179,8 @@ def create_html_output(tree_html, output_file):
                 <pre id="description">Select a node in the tree for its YANG description.</pre>
                 <h2 id="type-heading" style="display: none;">Type</h2>
                 <pre id="node-type" style="display: none;"></pre>
+                <h2 id="mandatory-heading" style="display: none;">Mandatory</h2>
+                <pre id="node-mandatory" style="display: none;"></pre>
                 <h2 id="default-heading" style="display: none;">Default</h2>
                 <pre id="default-value" style="display: none;"></pre>
             </div>
@@ -240,6 +250,8 @@ def create_html_output(tree_html, output_file):
                 var defaultValue = data.instance.get_node(data.node, true).data('default') || "";
                 var xpath = data.instance.get_node(data.node, true).data('xpath') || "No XPath available";
                 var nodeType = data.instance.get_node(data.node, true).data('node-type') || "No type available";
+                var mandatory = data.instance.get_node(data.node, true).data('mandatory') || "";
+                var readOnly = data.instance.get_node(data.node, true).data('read-only') || "";
 
                 $('#xpath').text(xpath);
                 $('#description').text(description);
@@ -251,11 +263,22 @@ def create_html_output(tree_html, output_file):
                     $('#default-heading').hide();
                 }}
                 if (nodeType && nodeType !== "N/A") {{
-                    $('#node-type').text(nodeType).show();
+                    var tmp = nodeType;
+                    if (readOnly) {{
+                        tmp += ` ${{readOnly}}`;
+                    }}
+                    $('#node-type').text(tmp).show();
                     $('#type-heading').show();
                 }} else {{
                     $('#node-type').hide();
                     $('#type-heading').hide();
+                }}
+                if (mandatory) {{
+                    $('#node-mandatory').text(mandatory).show();
+                    $('#mandatory-heading').show();
+                }} else {{
+                    $('#node-mandatory').hide();
+                    $('#mandatory-heading').hide();
                 }}
             }});
 
