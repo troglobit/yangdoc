@@ -25,6 +25,11 @@ def get_type_definition(node):
 
 
 def generate_tree(node, depth=0, ctx=None, exclusions=None):
+    if node.deprecated() or node.obsolete():
+        status = "deprecated" if node.deprecated() else "obsolete"
+        logging.info("Skipping %s node %s", status, construct_xpath(node))
+        return ""
+
     logging.debug('%s: is a %s type %s in %s', node.name(),
                   node.keyword(), node.nodetype(),
                   node.parent().name() if node.parent() else None)
