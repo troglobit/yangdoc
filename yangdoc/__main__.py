@@ -93,7 +93,10 @@ def main():
         if loaded_module:
             modules.append(loaded_module)
 
-    tree_html = generate_html_tree(ctx, exclusions)
+    # Sort modules alphabetically
+    sorted_modules = sorted(ctx, key=lambda m: m.name())
+
+    tree_html = generate_html_tree(sorted_modules, exclusions)
     create_html_output(tree_html, output_file)
 
 
