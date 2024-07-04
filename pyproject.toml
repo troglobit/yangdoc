@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yangdoc"
-version = "0.4.0"
+version = "0.5.0"
 description = "A project for generating YANG tree views."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -36,3 +36,4 @@ yangdoc = "yangdoc.__main__:main"
 
 [tool.setuptools]
 packages = ["yangdoc"]
+package-data = { "yangdoc" = ["screenshot.png"] }
