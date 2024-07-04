@@ -36,4 +36,8 @@ yangdoc = "yangdoc.__main__:main"
 
 [tool.setuptools]
 packages = ["yangdoc"]
-package-data = { "yangdoc" = ["screenshot.png"] }
+
+[tool.setuptools.package-data]
+yangdoc = [
+    "../screenshot.png"
+]
