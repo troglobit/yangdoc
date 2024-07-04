@@ -3,6 +3,6 @@ build/
 dist/
 *.bak
 *~
-
+*.egg-info/
 *.pyc
 *.html
