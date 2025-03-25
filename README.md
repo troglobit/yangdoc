@@ -15,7 +15,7 @@ See below [setup instructions](#setup) first.
 ```
 ~/src/yangdoc(main)$ python main.py -p yang -m ietf-system -e authentication \
                       -e local-users -e ntp -e ntp-udp-port -e timezone-name \
-					  -m ietf-interfaces -e if-mib
+                      -m ietf-interfaces -e if-mib
 INFO: Parsing ietf-system, enabling features: ['authentication', 'local-users', 'ntp', 'ntp-udp-port', 'timezone-name']
 WARNING: Warning: failed to parse module: Data model "ietf-netconf-acm" not found in local searchdirs.: Loading "ietf-netconf-acm" module failed.: Parsing module "ietf-system" failed.
 INFO: Parsing ietf-interfaces, enabling features: ['if-mib']
